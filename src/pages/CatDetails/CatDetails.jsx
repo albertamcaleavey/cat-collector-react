@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import './CatDetails.css'
 
 // Services
+import { getOne } from '../../services/cats'
 
 
 // Components
@@ -18,7 +19,17 @@ const CatDetails = ({ catImages, user }) => {
 
   const addToCollection = async (e) => {}
 
-  useEffect(() => {}, [id])
+  // split up properties of response data into two states: 
+  useEffect(() => {
+    const fetchOne = async () => {
+      const data = await getOne(id)
+      // 1. list of toys that the cat already owns is accessible as a property in the cat object
+      setCat(data.cat)
+      // 2. list of availableToys that the cat doesn't own
+      setAvailableToys(data.available_toys)
+    }
+    fetchOne()
+  }, [id])
 
   if (!cat) return <h1>Loading</h1>
 

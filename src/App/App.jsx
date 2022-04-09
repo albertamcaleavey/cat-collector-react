@@ -17,6 +17,7 @@ import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute'
 
 // Services
 import * as authService from '../services/authService'
+import * as catService from '../services/cats'
 
 // Image Assets
 import CoolCat from '../assets/cool-cat.svg'
@@ -28,8 +29,11 @@ import SkaterCat from '../assets/sk8r-boi-cat.svg'
 
 function App() {
   const navigate = useNavigate()
+  // state to store a list of cats from our database
   const [cats, setCats] = useState([])
+  // state to store a list of toys from our database
   const [toys, setToys] = useState([])
+  // state to store data on a single authenticated user
   const [user, setUser] = useState(authService.getUser())
 
   const catImages = [
@@ -37,19 +41,43 @@ function App() {
     NerdCat, HappyCat,
     CatInBox, TeaCupCat,
   ]
-
-  const addCat = async (catData) => {}
-
+//--------------------------------------------
+  // add created cats to state
+  const addCat = async (catData) => {
+    const cat = await catService.create(catData)
+    setCats([...cats, cat])
+  }
+// sets cats fetched from database in state
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await catService.getAll()
+      setCats(data)
+    }
+    fetchData()
+  }, [])
+//--------------------------------------------
   const addToy = async (toyData) => {}
 
-  const updateCat = async (catData) => {}
+//--------------------------------------------
 
+  const updateCat = async (catData) => {
+    const updatedCat = await catService.update(catData)
+    setCats(cats.map((cat) => (
+      cat.id === updatedCat.id ? updatedCat : cat
+    )))
+  }
+//--------------------------------------------
   const updateToy = async (toyData) => {}
+//--------------------------------------------
 
-  const deleteCat = async (id) => {}
+const deleteCat = async (id) => {
+  await catService.deleteOne(id)
+	setCats(cats.filter(cat => cat.id !== parseInt(id)))
+}
 
+//--------------------------------------------
   const deleteToy = async (id) => {}
-
+//--------------------------------------------
   const handleLogout = () => {
     authService.logout()
     setUser(null)
