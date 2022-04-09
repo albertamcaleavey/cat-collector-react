@@ -1,4 +1,6 @@
 // Source: https://stackoverflow.com/questions/21646738/convert-hex-to-rgba
+
+// helper function that accepts a hex color code and converts it to rgba (allowing us to manipulate the opacity)
 export const hexToRGBA = (hex) => {
   const a = .4
   const r = parseInt(hex.slice(1, 3), 16)
